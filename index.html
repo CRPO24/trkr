@@ -3,795 +3,2828 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Expense Tracker</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Star Citizen: Complete Ship Comparison</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            -webkit-tap-highlight-color: transparent;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
+        
         body {
-            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            background: linear-gradient(135deg, #0a192f 0%, #0f1a2a 100%);
+            color: #e0f7fa;
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             padding: 20px;
-            color: #333;
-            -webkit-text-size-adjust: 100%;
+            overflow-x: hidden;
         }
-
+        
         .container {
-            width: 100%;
-            max-width: 1200px;
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
         }
-
-        @media (max-width: 900px) {
-            .container {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .card {
-            background: rgba(255, 255, 255, 0.92);
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            padding: 25px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
+        
         header {
             text-align: center;
+            padding: 30px 0;
             margin-bottom: 30px;
+            background: rgba(13, 25, 48, 0.85);
+            border-radius: 15px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(66, 133, 244, 0.25);
+            position: relative;
+            overflow: hidden;
         }
-
-        header h1 {
-            color: #2c3e50;
-            margin-bottom: 5px;
-            font-size: clamp(1.8rem, 4vw, 2.5rem);
-            background: linear-gradient(to right, #1a2a6c, #b21f1f, #fdbb2d);
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #4fc3f7, #29b6f6, #03a9f4);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 12px;
+            background: linear-gradient(90deg, #4fc3f7, #29b6f6, #03a9f4);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         }
-
-        header p {
-            color: #7f8c8d;
-            font-size: clamp(0.9rem, 2vw, 1.1rem);
+        
+        .subtitle {
+            font-size: 1.15rem;
+            color: #81d4fa;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.7;
         }
-
-        /* Form Styles */
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #2c3e50;
-            font-size: clamp(0.9rem, 3vw, 1rem);
-        }
-
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 14px 16px;
-            border: 2px solid #e0e0e0;
+        
+        .data-source {
+            background: rgba(15, 35, 65, 0.7);
             border-radius: 10px;
-            font-size: clamp(1rem, 3vw, 1.1rem);
-            transition: border-color 0.3s;
-            background-color: #fff;
-            -webkit-appearance: none;
-            appearance: none;
-        }
-
-        .form-group input:focus, .form-group select:focus {
-            border-color: #3498db;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
-        }
-
-        button {
-            background: linear-gradient(to right, #1a2a6c, #b21f1f);
-            color: white;
-            border: none;
-            padding: 15px 25px;
-            border-radius: 10px;
-            font-size: clamp(1rem, 3vw, 1.1rem);
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            transition: transform 0.2s, box-shadow 0.2s;
-            letter-spacing: 1px;
-            touch-action: manipulation;
-        }
-
-        button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 7px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        button:active {
-            transform: translateY(0);
-        }
-
-        /* Summary Section */
-        .summary-card {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
-
-        .summary-stats {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, #3498db, #2c3e50);
-            color: white;
             padding: 15px;
-            border-radius: 10px;
+            margin: 25px auto;
+            max-width: 800px;
             text-align: center;
+            border: 1px solid rgba(66, 133, 244, 0.3);
+            font-size: 0.9rem;
         }
-
-        .stat-card.total {
-            grid-column: span 2;
-            background: linear-gradient(135deg, #1a2a6c, #b21f1f);
+        
+        .data-source p {
+            margin: 8px 0;
+            color: #b3e5fc;
         }
-
-        .stat-card h3 {
-            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
-            margin-bottom: 8px;
+        
+        .data-source a {
+            color: #29b6f6;
+            text-decoration: none;
+            transition: color 0.3s;
         }
-
-        .stat-card .amount {
-            font-size: clamp(1.3rem, 4vw, 1.8rem);
-            font-weight: 700;
+        
+        .data-source a:hover {
+            color: #4fc3f7;
+            text-decoration: underline;
         }
-
-        /* Category Breakdown */
-        .category-breakdown {
-            margin-top: 20px;
-        }
-
-        .category-breakdown h3 {
-            margin-bottom: 15px;
-            color: #2c3e50;
-            border-bottom: 2px solid #eee;
-            padding-bottom: 10px;
-            font-size: clamp(1rem, 3vw, 1.2rem);
-        }
-
-        .category-item {
+        
+        .comparison-controls {
             display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
-            font-size: clamp(0.85rem, 2.5vw, 1rem);
+            justify-content: center;
+            gap: 30px;
+            margin: 40px 0;
+            flex-wrap: wrap;
         }
-
-        .category-name {
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        
+        .ship-selector {
+            background: rgba(15, 35, 65, 0.7);
+            border-radius: 12px;
+            padding: 25px;
+            width: 380px;
+            border: 1px solid rgba(66, 133, 244, 0.3);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-
-        .category-icon {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
+        
+        .ship-selector:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+        }
+        
+        .selector-title {
+            font-size: 1.35rem;
+            margin-bottom: 18px;
+            color: #4fc3f7;
+            text-align: center;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #e0f7fa;
-            color: #006064;
-            font-size: clamp(1rem, 3vw, 1.2rem);
+            gap: 10px;
         }
-
-        /* Expenses Table */
-        .expenses-table {
+        
+        select {
             width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            table-layout: fixed;
-        }
-
-        .expenses-table th {
-            background: #2c3e50;
-            color: white;
-            text-align: left;
-            padding: 15px;
-            font-size: clamp(0.85rem, 2.5vw, 1rem);
-            font-weight: 600;
-        }
-
-        .expenses-table td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #eee;
-            font-size: clamp(0.8rem, 2.5vw, 0.95rem);
-            word-wrap: break-word;
-        }
-
-        .expenses-table tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        .expenses-table tr:hover {
-            background-color: #f1f1f1;
-        }
-
-        .action-btn {
-            background: none;
-            border: none;
-            color: #e74c3c;
-            cursor: pointer;
-            font-size: clamp(1rem, 3vw, 1.2rem);
-            padding: 5px;
-            width: auto;
-            touch-action: manipulation;
-        }
-
-        .action-btn:hover {
-            transform: scale(1.2);
-        }
-
-        .no-expenses {
-            text-align: center;
-            padding: 30px;
-            color: #7f8c8d;
-            font-style: italic;
-            font-size: clamp(0.9rem, 3vw, 1.1rem);
-        }
-
-        /* Chart Container */
-        .chart-container {
-            height: 200px;
-            margin-top: 20px;
-            position: relative;
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-around;
-            padding: 0 10px;
-        }
-
-        .chart-bar {
-            width: 40px;
-            background: linear-gradient(to top, #3498db, #2c3e50);
-            border-radius: 5px 5px 0 0;
-            position: relative;
-            margin: 0 5px;
-            flex-shrink: 0;
-        }
-
-        .chart-label {
-            position: absolute;
-            bottom: -25px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: clamp(0.65rem, 2vw, 0.75rem);
-            color: #2c3e50;
-            white-space: nowrap;
-        }
-        
-        /* Notification */
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 25px;
+            padding: 14px;
             border-radius: 8px;
-            background: #2ecc71;
-            color: white;
-            font-weight: 600;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            transform: translateX(200%);
-            transition: transform 0.4s ease;
-            z-index: 1000;
-            font-size: clamp(0.9rem, 3vw, 1rem);
+            background: rgba(25, 60, 110, 0.9);
+            border: 1px solid rgba(66, 133, 244, 0.6);
+            color: #e0f7fa;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
         
-        .notification.show {
-            transform: translateX(0);
+        select:hover {
+            border-color: #4fc3f7;
+            box-shadow: 0 0 10px rgba(79, 195, 247, 0.3);
         }
         
-        .notification.error {
-            background: #e74c3c;
-        }
-
-        /* Mobile-specific styles */
-        .mobile-only {
-            display: none;
+        select:focus {
+            outline: none;
+            border-color: #29b6f6;
+            box-shadow: 0 0 15px rgba(41, 182, 246, 0.5);
         }
         
-        @media (max-width: 600px) {
-            body {
-                padding: 10px;
-                display: block;
-            }
-            
-            .container {
-                padding: 0;
-                gap: 15px;
-            }
-            
-            .card {
-                padding: 20px 15px;
-                border-radius: 14px;
-            }
-            
-            .stat-card {
-                padding: 12px;
-            }
-            
-            .stat-card .amount {
-                font-size: 1.3rem;
-            }
-            
-            .expenses-table {
-                font-size: 14px;
-            }
-            
-            .expenses-table th, 
-            .expenses-table td {
-                padding: 10px 8px;
-            }
-            
-            .mobile-only {
-                display: block;
-            }
-            
-            /* Adjust table layout for mobile */
-            .expenses-table th:nth-child(3),
-            .expenses-table td:nth-child(3) {
-                display: none;
-            }
-            
-            .expenses-table th:nth-child(1),
-            .expenses-table td:nth-child(1) {
-                width: 25%;
-            }
-            
-            .expenses-table th:nth-child(2),
-            .expenses-table td:nth-child(2) {
-                width: 35%;
-            }
-            
-            .expenses-table th:nth-child(4),
-            .expenses-table td:nth-child(4) {
-                width: 25%;
-            }
-            
-            .expenses-table th:nth-child(5),
-            .expenses-table td:nth-child(5) {
-                width: 15%;
-            }
+        .chart-container {
+            background: rgba(15, 35, 65, 0.7);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(66, 133, 244, 0.3);
         }
         
-        /* Custom select arrow */
-        .select-wrapper {
+        .chart-title {
+            font-size: 1.7rem;
+            margin-bottom: 25px;
+            color: #4fc3f7;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        
+        .chart-wrapper {
             position: relative;
+            height: 500px;
+            width: 100%;
         }
         
-        .select-wrapper::after {
-            content: "▼";
-            font-size: 12px;
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            pointer-events: none;
-            color: #7f8c8d;
+        .ship-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-top: 35px;
+        }
+        
+        .stat-card {
+            background: rgba(25, 60, 110, 0.7);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(66, 133, 244, 0.3);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-7px);
+        }
+        
+        .stat-card-title {
+            font-size: 1.45rem;
+            color: #29b6f6;
+            margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(179, 229, 252, 0.25);
+            padding-bottom: 15px;
+        }
+        
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(179, 229, 252, 0.15);
+        }
+        
+        .stat-row:last-child {
+            border-bottom: none;
+        }
+        
+        .stat-name {
+            color: #b3e5fc;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .stat-value {
+            color: #e0f7fa;
+            font-weight: 700;
+            text-align: right;
+        }
+        
+        .price-value {
+            color: #ffca28;
+        }
+        
+        .cargo-value {
+            color: #81c784;
+        }
+        
+        .attack-value {
+            color: #ef5350;
+        }
+        
+        .speed-value {
+            color: #29b6f6;
+        }
+        
+        .defense-value {
+            color: #ab47bc;
+        }
+        
+        .highlight {
+            color: #ffca28;
+            font-weight: 700;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 35px 0;
+            color: #81d4fa;
+            margin-top: 50px;
+            border-top: 1px solid rgba(66, 133, 244, 0.3);
+            font-size: 0.95rem;
+        }
+        
+        .update-note {
+            background: rgba(255, 152, 0, 0.15);
+            border: 1px solid rgba(255, 152, 0, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        @media (max-width: 1100px) {
+            .ship-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .comparison-controls {
+                gap: 20px;
+            }
+            
+            .chart-wrapper {
+                height: 400px;
+            }
+            
+            h1 {
+                font-size: 2.4rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .comparison-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .ship-selector {
+                width: 100%;
+                max-width: 500px;
+            }
+            
+            h1 {
+                font-size: 2.1rem;
+            }
+            
+            .chart-title {
+                font-size: 1.5rem;
+            }
+        }
+        
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(10, 20, 40, 0.5);
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(66, 133, 244, 0.5);
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(79, 195, 247, 0.7);
         }
     </style>
 </head>
 <body>
-    <div class="notification" id="notification">Expense added successfully!</div>
-    
     <div class="container">
-        <div class="left-column">
-            <div class="card">
-                <header>
-                    <h1><i class="fas fa-money-bill-wave"></i> Expense Tracker</h1>
-                    <p>Track your spending and manage your budget</p>
-                    <p class="mobile-only">Tap the + button to add expenses</p>
-                </header>
-                
-                <div class="form-group">
-                    <label for="amount">Amount ($)</label>
-                    <input type="number" id="amount" placeholder="Enter amount" min="0.01" step="0.01" inputmode="decimal">
-                </div>
-                
-                <div class="form-group">
-                    <label for="category">Category</label>
-                    <div class="select-wrapper">
-                        <select id="category">
-                            <option value="Food">Food & Dining</option>
-                            <option value="Transport">Transportation</option>
-                            <option value="Housing">Housing</option>
-                            <option value="Entertainment">Entertainment</option>
-                            <option value="Shopping">Shopping</option>
-                            <option value="Utilities">Utilities</option>
-                            <option value="Healthcare">Healthcare</option>
-                            <option value="Travel">Travel</option>
-                            <option value="Other">Other</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="description">Description</label>
-                    <input type="text" id="description" placeholder="Enter description">
-                </div>
-                
-                <div class="form-group">
-                    <label for="date">Date</label>
-                    <input type="date" id="date">
-                </div>
-                
-                <button id="addExpense">
-                    <i class="fas fa-plus-circle"></i> Add Expense
-                </button>
+        <header>
+            <h1><i class="fas fa-stars"></i> Star Citizen: Complete Ship Comparison</h1>
+            <p class="subtitle">Compare any two ships across 5 key metrics: Price, Cargo, Attack, Speed, and Defense with verified Alpha 4.1.1 data</p>
+        </header>
+        
+        <div class="data-source">
+            <p>Data verified from official sources and community trackers (June 2025):</p>
+            <p><a href="https://scfocus.org/ship-sale-rental-locations-history/" target="_blank">SC Focus</a> | 
+               <a href="https://starcitizen.tools/Purchasing_ships" target="_blank">Star Citizen Tools</a> | 
+               <a href="https://starcitizen.fandom.com/wiki/List_of_ship_and_vehicle_prices" target="_blank">Star Citizen Wiki</a></p>
+            <div class="update-note">
+                <i class="fas fa-exclamation-circle"></i> Prices updated as of Alpha 4.1.1 (June 2025). by Karlovsky.
+            </div>
+        </div>
+        
+        <div class="comparison-controls">
+            <div class="ship-selector">
+                <h3 class="selector-title"><i class="fas fa-rocket"></i> Select First Ship</h3>
+                <select id="ship1Select">
+                    <option value="">-- Select a Ship --</option>
+                    <!-- Ships will be populated by JavaScript -->
+                </select>
             </div>
             
-            <div class="card summary-card">
-                <div class="summary-stats">
-                    <div class="stat-card">
-                        <h3>Total Expenses</h3>
-                        <div class="amount" id="totalAmount">$0.00</div>
-                    </div>
-                    <div class="stat-card">
-                        <h3>This Month</h3>
-                        <div class="amount" id="monthAmount">$0.00</div>
-                    </div>
-                    <div class="stat-card total">
-                        <h3>Average Daily</h3>
-                        <div class="amount" id="avgDaily">$0.00</div>
-                    </div>
+            <div class="ship-selector">
+                <h3 class="selector-title"><i class="fas fa-space-shuttle"></i> Select Second Ship</h3>
+                <select id="ship2Select">
+                    <option value="">-- Select a Ship --</option>
+                    <!-- Ships will be populated by JavaScript -->
+                </select>
+            </div>
+        </div>
+        
+        <div class="chart-container">
+            <h2 class="chart-title"><i class="fas fa-chart-radar"></i> Ship Attribute Comparison</h2>
+            <div class="chart-wrapper">
+                <canvas id="comparisonChart"></canvas>
+            </div>
+        </div>
+        
+        <div class="ship-stats">
+            <div class="stat-card" id="ship1Stats">
+                <h3 class="stat-card-title">Ship 1 Details</h3>
+                <div class="stat-row">
+                    <span class="stat-name"><i class="fas fa-industry"></i> Manufacturer:</span>
+                    <span class="stat-value" id="ship1Manufacturer">-</span>
                 </div>
-                
-                <div class="category-breakdown">
-                    <h3>Category Breakdown</h3>
-                    <div id="categoryList">
-                        <div class="category-item">
-                            <div class="category-name">
-                                <span class="category-icon">📊</span>
-                                No expenses yet
-                            </div>
-                        </div>
-                    </div>
+                <div class="stat-row">
+                    <span class="stat-name"><i class="fas fa-tag"></i> Role:</span>
+                    <span class="stat-value" id="ship1Role">-</span>
                 </div>
-                
-                <div class="chart-container" id="chartContainer">
-                    <p style="color:#7f8c8d; text-align: center;">Add expenses to see chart</p>
+                <div class="stat-row">
+                    <span class="stat-name"><i class="fas fa-money-bill-wave"></i> Price:</span>
+                    <span class="stat-value price-value" id="ship1Price">-</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-name"><i class="fas fa-box-open"></i> Cargo (SCU):</span>
+                    <span class="stat-value cargo-value" id="ship1Cargo">-</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-name"><i class="fas fa-fist-raised"></i> Attack Rating:</span>
+                    <span class="stat-value attack-value" id="ship1Attack">-</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-name"><i class="fas fa-tachometer-alt"></i> Top Speed:</span>
+                    <span class="stat-value speed-value" id="ship1Speed">-</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-name"><i class="fas fa-shield-alt"></i> Defense Rating:</span>
+                    <span class="stat-value defense-value" id="ship1Defense">-</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-name"><i class="fas fa-map-marker-alt"></i> Purchase Location:</span>
+                    <span class="stat-value" id="ship1Location">-</span>
+                </div>
+            </div>
+            
+            <div class="stat-card" id="ship2Stats">
+                <h3 class="stat-card-title">Ship 2 Details</h3>
+                <div class="stat-row">
+                    <span class="stat-name"><i class="fas fa-industry"></i> Manufacturer:</span>
+                    <span class="stat-value" id="ship2Manufacturer">-</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-name"><i class="fas fa-tag"></i> Role:</span>
+                    <span class="stat-value" id="ship2Role">-</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-name"><i class="fas fa-money-bill-wave"></i> Price:</span>
+                    <span class="stat-value price-value" id="ship2Price">-</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-name"><i class="fas fa-box-open"></i> Cargo (SCU):</span>
+                    <span class="stat-value cargo-value" id="ship2Cargo">-</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-name"><i class="fas fa-fist-raised"></i> Attack Rating:</span>
+                    <span class="stat-value attack-value" id="ship2Attack">-</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-name"><i class="fas fa-tachometer-alt"></i> Top Speed:</span>
+                    <span class="stat-value speed-value" id="ship2Speed">-</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-name"><i class="fas fa-shield-alt"></i> Defense Rating:</span>
+                    <span class="stat-value defense-value" id="ship2Defense">-</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-name"><i class="fas fa-map-marker-alt"></i> Purchase Location:</span>
+                    <span class="stat-value" id="ship2Location">-</span>
                 </div>
             </div>
         </div>
         
-        <div class="right-column">
-            <div class="card">
-                <h2 style="margin-bottom: 20px;"><i class="fas fa-receipt"></i> Recent Expenses</h2>
-                <div class="table-container">
-                    <table class="expenses-table">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Category</th>
-                                <th>Description</th>
-                                <th>Amount</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="expensesTableBody">
-                            <tr>
-                                <td colspan="5" class="no-expenses">No expenses recorded yet. Add your first expense!</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+        <footer>
+            <p>Star Citizen Ship Comparison Tool | Data sourced from in-game terminals and verified community trackers</p>
+            <p>Note: All specifications based on Star Citizen Alpha 4.1.1 (June 2025). Prices subject to change with updates.</p>
+        </footer>
     </div>
-
+    
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     <script>
-        // Initialize expenses array from localStorage or create empty array
-        let expenses = JSON.parse(localStorage.getItem('expenses')) || [];
-        
-        // Helper function to format date as YYYY-MM-DD for iOS
-        function formatDate(date) {
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
-        }
-        
-        // DOM Elements
-        const amountInput = document.getElementById('amount');
-        const categorySelect = document.getElementById('category');
-        const descriptionInput = document.getElementById('description');
-        const dateInput = document.getElementById('date');
-        const addButton = document.getElementById('addExpense');
-        const expensesTableBody = document.getElementById('expensesTableBody');
-        const totalAmountEl = document.getElementById('totalAmount');
-        const monthAmountEl = document.getElementById('monthAmount');
-        const avgDailyEl = document.getElementById('avgDaily');
-        const categoryList = document.getElementById('categoryList');
-        const chartContainer = document.getElementById('chartContainer');
-        const notification = document.getElementById('notification');
-        
-        // Set today's date as default
-        const today = new Date();
-        dateInput.value = formatDate(today);
-        dateInput.max = formatDate(today); // Prevent future dates
-        
+        // Complete Star Citizen Ship Database (June 2025 - Alpha 4.1.1)
+        // Ships are sorted alphabetically and include all from your list
+        const ships = [
+            {
+                id: '100i',
+                name: '100i',
+                manufacturer: 'Origin Jumpworks',
+                role: 'Luxury Starter',
+                price: '1,146,600 aUEC',
+                priceValue: 1146600,
+                cargo: 2,
+                attack: 2,
+                speed: 220,
+                defense: 3,
+                location: 'New Deal (Lorville), Astro Armada (Area 18)',
+                color: 'rgba(186, 104, 200, 0.7)'
+            },
+            {
+                id: '125a',
+                name: '125a',
+                manufacturer: 'Origin Jumpworks',
+                role: 'Luxury Courier',
+                price: '1,587,600 aUEC',
+                priceValue: 1587600,
+                cargo: 2,
+                attack: 3,
+                speed: 225,
+                defense: 3,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(186, 104, 200, 0.7)'
+            },
+            {
+                id: '135c',
+                name: '135c',
+                manufacturer: 'Origin Jumpworks',
+                role: 'Luxury Transport',
+                price: '1,490,580 aUEC',
+                priceValue: 1490580,
+                cargo: 6,
+                attack: 2,
+                speed: 215,
+                defense: 3,
+                location: 'Astro Armada (Area 18)',
+                color: 'rgba(186, 104, 200, 0.7)'
+            },
+            {
+                id: '300i',
+                name: '300i',
+                manufacturer: 'Origin Jumpworks',
+                role: 'Luxury Touring',
+                price: '1,375,920 aUEC',
+                priceValue: 1375920,
+                cargo: 8,
+                attack: 3,
+                speed: 210,
+                defense: 3,
+                location: 'Astro Armada (Area 18)',
+                color: 'rgba(186, 104, 200, 0.7)'
+            },
+            {
+                id: '315p',
+                name: '315p',
+                manufacturer: 'Origin Jumpworks',
+                role: 'Exploration',
+                price: '1,490,580 aUEC',
+                priceValue: 1490580,
+                cargo: 12,
+                attack: 2,
+                speed: 210,
+                defense: 3,
+                location: 'Astro Armada (Area 18)',
+                color: 'rgba(186, 104, 200, 0.7)'
+            },
+            {
+                id: '325a',
+                name: '325a',
+                manufacturer: 'Origin Jumpworks',
+                role: 'Combat',
+                price: '1,852,200 aUEC',
+                priceValue: 1852200,
+                cargo: 4,
+                attack: 5,
+                speed: 215,
+                defense: 4,
+                location: 'Astro Armada (Area 18)',
+                color: 'rgba(186, 104, 200, 0.7)'
+            },
+            {
+                id: '350r',
+                name: '350r',
+                manufacturer: 'Origin Jumpworks',
+                role: 'Racing',
+                price: '3,748,500 aUEC',
+                priceValue: 3748500,
+                cargo: 2,
+                attack: 3,
+                speed: 280,
+                defense: 3,
+                location: 'Astro Armada (Area 18)',
+                color: 'rgba(186, 104, 200, 0.7)'
+            },
+            {
+                id: '400i',
+                name: '400i',
+                manufacturer: 'Origin Jumpworks',
+                role: 'Luxury Explorer',
+                price: '11,466,000 aUEC',
+                priceValue: 11466000,
+                cargo: 40,
+                attack: 5,
+                speed: 220,
+                defense: 7,
+                location: 'New Deal (Lorville), Astro Armada (Area 18)',
+                color: 'rgba(186, 104, 200, 0.7)'
+            },
+            {
+                id: '600i',
+                name: '600i',
+                manufacturer: 'Origin Jumpworks',
+                role: 'Luxury Explorer',
+                price: '27,231,750 aUEC',
+                priceValue: 27231750,
+                cargo: 40,
+                attack: 6,
+                speed: 200,
+                defense: 7,
+                location: 'Astro Armada (Area 18)',
+                color: 'rgba(186, 104, 200, 0.7)'
+            },
+            {
+                id: '600i_touring',
+                name: '600i Touring',
+                manufacturer: 'Origin Jumpworks',
+                role: 'Luxury Transport',
+                price: '24,938,550 aUEC',
+                priceValue: 24938550,
+                cargo: 16,
+                attack: 5,
+                speed: 195,
+                defense: 7,
+                location: 'Astro Armada (Area 18)',
+                color: 'rgba(186, 104, 200, 0.7)'
+            },
+            {
+                id: '85x',
+                name: '85X',
+                manufacturer: 'Origin Jumpworks',
+                role: 'Luxury Snub',
+                price: '573,300 aUEC',
+                priceValue: 573300,
+                cargo: 0,
+                attack: 2,
+                speed: 240,
+                defense: 2,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(186, 104, 200, 0.7)'
+            },
+            {
+                id: '890_jump',
+                name: '890 Jump',
+                manufacturer: 'Origin Jumpworks',
+                role: 'Luxury Capital',
+                price: '65,365,200 aUEC',
+                priceValue: 65365200,
+                cargo: 352,
+                attack: 6,
+                speed: 185,
+                defense: 9,
+                location: 'New Deal (Lorville), Astro Armada (Area 18)',
+                color: 'rgba(186, 104, 200, 0.7)'
+            },
+            {
+                id: 'a1_spirit',
+                name: 'A1 Spirit',
+                manufacturer: 'Crusader Industries',
+                role: 'Bomber',
+                price: '4,961,250 aUEC',
+                priceValue: 4961250,
+                cargo: 24,
+                attack: 8,
+                speed: 200,
+                defense: 6,
+                location: 'Crusader Showroom (Orison)',
+                color: 'rgba(126, 87, 194, 0.7)'
+            },
+            {
+                id: 'a2_starlifter',
+                name: 'A2 Starlifter',
+                manufacturer: 'Crusader Industries',
+                role: 'Heavy Bomber',
+                price: '44,296,876 aUEC',
+                priceValue: 44296876,
+                cargo: 522,
+                attack: 9,
+                speed: 190,
+                defense: 9,
+                location: 'Crusader Showroom (Orison)',
+                color: 'rgba(126, 87, 194, 0.7)'
+            },
+            {
+                id: 'andromeda',
+                name: 'Constellation Andromeda',
+                manufacturer: 'Roberts Space Industries',
+                role: 'Multi-Role',
+                price: '10,160,640 aUEC',
+                priceValue: 10160640,
+                cargo: 96,
+                attack: 7,
+                speed: 195,
+                defense: 7,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(240, 98, 146, 0.7)'
+            },
+            {
+                id: 'aquila',
+                name: 'Constellation Aquila',
+                manufacturer: 'Roberts Space Industries',
+                role: 'Exploration',
+                price: '12,186,720 aUEC',
+                priceValue: 12186720,
+                cargo: 96,
+                attack: 6,
+                speed: 195,
+                defense: 7,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(240, 98, 146, 0.7)'
+            },
+            {
+                id: 'arrow',
+                name: 'Anvil Arrow',
+                manufacturer: 'Anvil Aerospace',
+                role: 'Light Fighter',
+                price: '1,984,500 aUEC',
+                priceValue: 1984500,
+                cargo: 0,
+                attack: 7,
+                speed: 280,
+                defense: 4,
+                location: 'New Deal (Lorville), Astro Armada (Area 18)',
+                color: 'rgba(79, 195, 247, 0.7)'
+            },
+            {
+                id: 'atls',
+                name: 'ATLS',
+                manufacturer: 'Tumbril',
+                role: 'Tank',
+                price: '75,600 aUEC',
+                priceValue: 75600,
+                cargo: 0,
+                attack: 8,
+                speed: 55,
+                defense: 9,
+                location: 'New Deal (Lorville), Astro Armada (Area 18), Unknown',
+                color: 'rgba(121, 85, 72, 0.7)'
+            },
+            {
+                id: 'aurora_cl',
+                name: 'Aurora CL',
+                manufacturer: 'Roberts Space Industries',
+                role: 'Courier',
+                price: '1,020,600 aUEC',
+                priceValue: 1020600,
+                cargo: 3,
+                attack: 3,
+                speed: 190,
+                defense: 3,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(66, 133, 244, 0.7)'
+            },
+            {
+                id: 'aurora_es',
+                name: 'Aurora ES',
+                manufacturer: 'Roberts Space Industries',
+                role: 'Starter',
+                price: '423,360 aUEC',
+                priceValue: 423360,
+                cargo: 3,
+                attack: 2,
+                speed: 190,
+                defense: 3,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(66, 133, 244, 0.7)'
+            },
+            {
+                id: 'aurora_ln',
+                name: 'Aurora LN',
+                manufacturer: 'Roberts Space Industries',
+                role: 'Light Combat',
+                price: '907,200 aUEC',
+                priceValue: 907200,
+                cargo: 3,
+                attack: 4,
+                speed: 190,
+                defense: 4,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(66, 133, 244, 0.7)'
+            },
+            {
+                id: 'aurora_lx',
+                name: 'Aurora LX',
+                manufacturer: 'Roberts Space Industries',
+                role: 'Luxury Starter',
+                price: '687,960 aUEC',
+                priceValue: 687960,
+                cargo: 3,
+                attack: 2,
+                speed: 195,
+                defense: 3,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(66, 133, 244, 0.7)'
+            },
+            {
+                id: 'aurora_mr',
+                name: 'Aurora MR',
+                manufacturer: 'Roberts Space Industries',
+                role: 'Starter',
+                price: '680,400 aUEC',
+                priceValue: 680400,
+                cargo: 3,
+                attack: 3,
+                speed: 190,
+                defense: 3,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(66, 133, 244, 0.7)'
+            },
+            {
+                id: 'avenger_stalker',
+                name: 'Avenger Stalker',
+                manufacturer: 'Aegis Dynamics',
+                role: 'Bounty Hunter',
+                price: '1,587,600 aUEC',
+                priceValue: 1587600,
+                cargo: 8,
+                attack: 5,
+                speed: 215,
+                defense: 4,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(66, 66, 66, 0.7)'
+            },
+            {
+                id: 'avenger_titan',
+                name: 'Avenger Titan',
+                manufacturer: 'Aegis Dynamics',
+                role: 'Multi-Role',
+                price: '1,358,280 aUEC',
+                priceValue: 1358280,
+                cargo: 8,
+                attack: 5,
+                speed: 215,
+                defense: 4,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(66, 66, 66, 0.7)'
+            },
+            {
+                id: 'avenger_titan_renegade',
+                name: 'Avenger Titan Renegade',
+                manufacturer: 'Aegis Dynamics',
+                role: 'Combat',
+                price: '1,852,200 aUEC',
+                priceValue: 1852200,
+                cargo: 8,
+                attack: 6,
+                speed: 215,
+                defense: 5,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(66, 66, 66, 0.7)'
+            },
+            {
+                id: 'avenger_warlock',
+                name: 'Avenger Warlock',
+                manufacturer: 'Aegis Dynamics',
+                role: 'EMP Specialist',
+                price: '2,249,100 aUEC',
+                priceValue: 2249100,
+                cargo: 0,
+                attack: 5,
+                speed: 215,
+                defense: 5,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(66, 66, 66, 0.7)'
+            },
+            {
+                id: 'ballista',
+                name: 'Ballista',
+                manufacturer: 'Anvil Aerospace',
+                role: 'Missile Platform',
+                price: '1,481,760 aUEC',
+                priceValue: 1481760,
+                cargo: 0,
+                attack: 8,
+                speed: 50,
+                defense: 7,
+                location: 'New Deal (Lorville), Astro Armada (Area 18)',
+                color: 'rgba(79, 195, 247, 0.7)'
+            },
+            {
+                id: 'blade',
+                name: 'Blade',
+                manufacturer: 'Esperia',
+                role: 'Heavy Fighter',
+                price: '7,796,250 aUEC',
+                priceValue: 7796250,
+                cargo: 0,
+                attack: 8,
+                speed: 220,
+                defense: 6,
+                location: 'Astro Armada (Area 18)',
+                color: 'rgba(174, 213, 129, 0.7)'
+            },
+            {
+                id: 'buccaneer',
+                name: 'Buccaneer',
+                manufacturer: 'Drake Interplanetary',
+                role: 'Light Fighter',
+                price: '1,663,200 aUEC',
+                priceValue: 1663200,
+                cargo: 0,
+                attack: 8,
+                speed: 240,
+                defense: 4,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(255, 138, 101, 0.7)'
+            },
+            {
+                id: 'c1_spirit',
+                name: 'C1 Spirit',
+                manufacturer: 'Crusader Industries',
+                role: 'Light Transport',
+                price: '3,118,500 aUEC',
+                priceValue: 3118500,
+                cargo: 48,
+                attack: 4,
+                speed: 210,
+                defense: 5,
+                location: 'Crusader Showroom (Orison)',
+                color: 'rgba(126, 87, 194, 0.7)'
+            },
+            {
+                id: 'c2_starlifter',
+                name: 'C2 Starlifter',
+                manufacturer: 'Crusader Industries',
+                role: 'Heavy Transport',
+                price: '18,900,000 aUEC',
+                priceValue: 18900000,
+                cargo: 696,
+                attack: 5,
+                speed: 210,
+                defense: 7,
+                location: 'New Deal (Lorville), Astro Armada (Area 18), Crusader Showroom (Orison)',
+                color: 'rgba(126, 87, 194, 0.7)'
+            },
+            {
+                id: 'carrack',
+                name: 'Carrack',
+                manufacturer: 'Anvil Aerospace',
+                role: 'Exploration Capital',
+                price: '34,398,000 aUEC',
+                priceValue: 34398000,
+                cargo: 456,
+                attack: 7,
+                speed: 208,
+                defense: 9,
+                location: 'Astro Armada (Area 18)',
+                color: 'rgba(79, 195, 247, 0.7)'
+            },
+            {
+                id: 'caterpillar',
+                name: 'Caterpillar',
+                manufacturer: 'Drake Interplanetary',
+                role: 'Heavy Freighter',
+                price: '12,474,000 aUEC',
+                priceValue: 12474000,
+                cargo: 576,
+                attack: 6,
+                speed: 130,
+                defense: 7,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(255, 138, 101, 0.7)'
+            },
+            {
+                id: 'centurion',
+                name: 'Centurion',
+                manufacturer: 'Anvil Aerospace',
+                role: 'Security Vehicle',
+                price: '1,164,240 aUEC',
+                priceValue: 1164240,
+                cargo: 0,
+                attack: 5,
+                speed: 65,
+                defense: 6,
+                location: 'New Deal (Lorville), Astro Armada (Area 18)',
+                color: 'rgba(79, 195, 247, 0.7)'
+            },
+            {
+                id: 'constellation_phoenix',
+                name: 'Constellation Phoenix',
+                manufacturer: 'Roberts Space Industries',
+                role: 'Luxury Transport',
+                price: '14,817,600 aUEC',
+                priceValue: 14817600,
+                cargo: 96,
+                attack: 6,
+                speed: 195,
+                defense: 7,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(240, 98, 146, 0.7)'
+            },
+            {
+                id: 'constellation_taurus',
+                name: 'Constellation Taurus',
+                manufacturer: 'Roberts Space Industries',
+                role: 'Freighter',
+                price: '8,043,840 aUEC',
+                priceValue: 8043840,
+                cargo: 174,
+                attack: 6,
+                speed: 195,
+                defense: 7,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(240, 98, 146, 0.7)'
+            },
+            {
+                id: 'corsair',
+                name: 'Corsair',
+                manufacturer: 'Drake Interplanetary',
+                role: 'Exploration',
+                price: '6,552,000 aUEC',
+                priceValue: 6552000,
+                cargo: 72,
+                attack: 8,
+                speed: 195,
+                defense: 6,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(255, 138, 101, 0.7)'
+            },
+            {
+                id: 'cutter',
+                name: 'Cutter',
+                manufacturer: 'Drake Interplanetary',
+                role: 'Starter',
+                price: '635,040 aUEC',
+                priceValue: 635040,
+                cargo: 4,
+                attack: 2,
+                speed: 185,
+                defense: 4,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(255, 138, 101, 0.7)'
+            },
+            {
+                id: 'cutter_rambler',
+                name: 'Cutter Rambler',
+                manufacturer: 'Drake Interplanetary',
+                role: 'Exploration',
+                price: '740,880 aUEC',
+                priceValue: 740880,
+                cargo: 4,
+                attack: 2,
+                speed: 185,
+                defense: 4,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(255, 138, 101, 0.7)'
+            },
+            {
+                id: 'cutter_scout',
+                name: 'Cutter Scout',
+                manufacturer: 'Drake Interplanetary',
+                role: 'Scout',
+                price: '705,600 aUEC',
+                priceValue: 705600,
+                cargo: 2,
+                attack: 3,
+                speed: 190,
+                defense: 4,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(255, 138, 101, 0.7)'
+            },
+            {
+                id: 'cvs_sm',
+                name: 'CVS-SM',
+                manufacturer: 'Unknown',
+                role: 'Snub Fighter',
+                price: '387,000 aUEC',
+                priceValue: 387000,
+                cargo: 0,
+                attack: 3,
+                speed: 230,
+                defense: 2,
+                location: 'Unknown',
+                color: 'rgba(150, 150, 150, 0.7)'
+            },
+            {
+                id: 'cyclone',
+                name: 'Cyclone',
+                manufacturer: 'Tumbril',
+                role: 'Ground Vehicle',
+                price: '103,950 aUEC',
+                priceValue: 103950,
+                cargo: 1,
+                attack: 3,
+                speed: 75,
+                defense: 4,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(121, 85, 72, 0.7)'
+            },
+            {
+                id: 'cyclone_aa',
+                name: 'Cyclone AA',
+                manufacturer: 'Tumbril',
+                role: 'Anti-Aircraft',
+                price: '151,200 aUEC',
+                priceValue: 151200,
+                cargo: 0,
+                attack: 7,
+                speed: 70,
+                defense: 5,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(121, 85, 72, 0.7)'
+            },
+            {
+                id: 'cyclone_mt',
+                name: 'Cyclone MT',
+                manufacturer: 'Tumbril',
+                role: 'Mining',
+                price: '141,750 aUEC',
+                priceValue: 141750,
+                cargo: 4,
+                attack: 2,
+                speed: 70,
+                defense: 4,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(121, 85, 72, 0.7)'
+            },
+            {
+                id: 'cyclone_rc',
+                name: 'Cyclone RC',
+                manufacturer: 'Tumbril',
+                role: 'Recon',
+                price: '122,850 aUEC',
+                priceValue: 122850,
+                cargo: 0,
+                attack: 2,
+                speed: 75,
+                defense: 4,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(121, 85, 72, 0.7)'
+            },
+            {
+                id: 'cyclone_rn',
+                name: 'Cyclone RN',
+                manufacturer: 'Tumbril',
+                role: 'Racing',
+                price: '122,850 aUEC',
+                priceValue: 122850,
+                cargo: 0,
+                attack: 2,
+                speed: 90,
+                defense: 3,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(121, 85, 72, 0.7)'
+            },
+            {
+                id: 'cyclone_tr',
+                name: 'Cyclone TR',
+                manufacturer: 'Tumbril',
+                role: 'Combat',
+                price: '122,850 aUEC',
+                priceValue: 122850,
+                cargo: 0,
+                attack: 5,
+                speed: 70,
+                defense: 5,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(121, 85, 72, 0.7)'
+            },
+            {
+                id: 'defender',
+                name: 'Banu Defender',
+                manufacturer: 'Banu Souli',
+                role: 'Alien Fighter',
+                price: '6,237,000 aUEC',
+                priceValue: 6237000,
+                cargo: 2,
+                attack: 7,
+                speed: 235,
+                defense: 7,
+                location: 'Astro Armada (Area 18)',
+                color: 'rgba(174, 213, 129, 0.7)'
+            },
+            {
+                id: 'dragonfly',
+                name: 'Dragonfly',
+                manufacturer: 'Drake Interplanetary',
+                role: 'Hoverbike',
+                price: '342,720 aUEC',
+                priceValue: 342720,
+                cargo: 0,
+                attack: 3,
+                speed: 100,
+                defense: 2,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(255, 138, 101, 0.7)'
+            },
+            {
+                id: 'eclipse',
+                name: 'Eclipse',
+                manufacturer: 'Aegis Dynamics',
+                role: 'Stealth Bomber',
+                price: '7,938,000 aUEC',
+                priceValue: 7938000,
+                cargo: 0,
+                attack: 9,
+                speed: 215,
+                defense: 5,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(66, 66, 66, 0.7)'
+            },
+            {
+                id: 'esperia_prowler',
+                name: 'Esperia Prowler',
+                manufacturer: 'Esperia',
+                role: 'Dropship',
+                price: '18,711,000 aUEC',
+                priceValue: 18711000,
+                cargo: 24,
+                attack: 7,
+                speed: 210,
+                defense: 8,
+                location: 'Astro Armada (Area 18)',
+                color: 'rgba(174, 213, 129, 0.7)'
+            },
+            {
+                id: 'freelancer',
+                name: 'Freelancer',
+                manufacturer: 'MISC',
+                role: 'Freighter',
+                price: '3,118,500 aUEC',
+                priceValue: 3118500,
+                cargo: 66,
+                attack: 5,
+                speed: 205,
+                defense: 6,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(92, 107, 192, 0.7)'
+            },
+            {
+                id: 'freelancer_dur',
+                name: 'Freelancer DUR',
+                manufacturer: 'MISC',
+                role: 'Exploration',
+                price: '3,316,950 aUEC',
+                priceValue: 3316950,
+                cargo: 52,
+                attack: 5,
+                speed: 205,
+                defense: 6,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(92, 107, 192, 0.7)'
+            },
+            {
+                id: 'freelancer_max',
+                name: 'Freelancer MAX',
+                manufacturer: 'MISC',
+                role: 'Heavy Freighter',
+                price: '4,252,500 aUEC',
+                priceValue: 4252500,
+                cargo: 120,
+                attack: 5,
+                speed: 200,
+                defense: 6,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(92, 107, 192, 0.7)'
+            },
+            {
+                id: 'freelancer_mis',
+                name: 'Freelancer MIS',
+                manufacturer: 'MISC',
+                role: 'Missile Boat',
+                price: '4,961,250 aUEC',
+                priceValue: 4961250,
+                cargo: 52,
+                attack: 7,
+                speed: 205,
+                defense: 7,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(92, 107, 192, 0.7)'
+            },
+            {
+                id: 'fury',
+                name: 'Fury',
+                manufacturer: 'Aopoa',
+                role: 'Snub Fighter',
+                price: '727,650 aUEC',
+                priceValue: 727650,
+                cargo: 0,
+                attack: 4,
+                speed: 240,
+                defense: 3,
+                location: 'New Deal (Lorville), Astro Armada (Area 18)',
+                color: 'rgba(174, 213, 129, 0.7)'
+            },
+            {
+                id: 'fury_lx',
+                name: 'Fury LX',
+                manufacturer: 'Aopoa',
+                role: 'Luxury Snub',
+                price: '824,670 aUEC',
+                priceValue: 824670,
+                cargo: 0,
+                attack: 3,
+                speed: 250,
+                defense: 3,
+                location: 'Astro Armada (Area 18)',
+                color: 'rgba(174, 213, 129, 0.7)'
+            },
+            {
+                id: 'fury_mx',
+                name: 'Fury MX',
+                manufacturer: 'Aopoa',
+                role: 'Combat Snub',
+                price: '727,650 aUEC',
+                priceValue: 727650,
+                cargo: 0,
+                attack: 5,
+                speed: 235,
+                defense: 4,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(174, 213, 129, 0.7)'
+            },
+            {
+                id: 'gatac_syulen',
+                name: 'Gatac Syulen',
+                manufacturer: 'Gatac',
+                role: 'Alien Transport',
+                price: '2,778,300 aUEC',
+                priceValue: 2778300,
+                cargo: 24,
+                attack: 4,
+                speed: 210,
+                defense: 5,
+                location: 'Astro Armada (Area 18)',
+                color: 'rgba(174, 213, 129, 0.7)'
+            },
+            {
+                id: 'gladiator',
+                name: 'Gladiator',
+                manufacturer: 'Anvil Aerospace',
+                role: 'Bomber',
+                price: '4,365,900 aUEC',
+                priceValue: 4365900,
+                cargo: 0,
+                attack: 7,
+                speed: 200,
+                defense: 6,
+                location: 'Astro Armada (Area 18)',
+                color: 'rgba(79, 195, 247, 0.7)'
+            },
+            {
+                id: 'gladius',
+                name: 'Gladius',
+                manufacturer: 'Aegis Dynamics',
+                role: 'Light Fighter',
+                price: '2,381,400 aUEC',
+                priceValue: 2381400,
+                cargo: 0,
+                attack: 7,
+                speed: 240,
+                defense: 4,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(66, 66, 66, 0.7)'
+            },
+            {
+                id: 'gladius_valiant',
+                name: 'Gladius Valiant',
+                manufacturer: 'Aegis Dynamics',
+                role: 'Light Fighter',
+                price: '2,910,600 aUEC',
+                priceValue: 2910600,
+                cargo: 0,
+                attack: 7,
+                speed: 240,
+                defense: 4,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(66, 66, 66, 0.7)'
+            },
+            {
+                id: 'greycat_ptv',
+                name: 'Greycat PTV',
+                manufacturer: 'Greycat Industrial',
+                role: 'Buggy',
+                price: '28,350 aUEC',
+                priceValue: 28350,
+                cargo: 0,
+                attack: 0,
+                speed: 35,
+                defense: 1,
+                location: 'Astro Armada (Area 18)',
+                color: 'rgba(189, 189, 189, 0.7)'
+            },
+            {
+                id: 'greycat_roc',
+                name: 'Greycat ROC',
+                manufacturer: 'Greycat Industrial',
+                role: 'Mining Vehicle',
+                price: '103,950 aUEC',
+                priceValue: 103950,
+                cargo: 1.2,
+                attack: 0,
+                speed: 32,
+                defense: 3,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(189, 189, 189, 0.7)'
+            },
+            {
+                id: 'greycat_roc_ds',
+                name: 'Greycat ROC-DS',
+                manufacturer: 'Greycat Industrial',
+                role: 'Mining Vehicle',
+                price: '141,750 aUEC',
+                priceValue: 141750,
+                cargo: 2.4,
+                attack: 0,
+                speed: 30,
+                defense: 4,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(189, 189, 189, 0.7)'
+            },
+            {
+                id: 'greycat_stv',
+                name: 'Greycat STV',
+                manufacturer: 'Greycat Industrial',
+                role: 'Scout Vehicle',
+                price: '75,600 aUEC',
+                priceValue: 75600,
+                cargo: 0,
+                attack: 2,
+                speed: 65,
+                defense: 3,
+                location: 'Astro Armada (Area 18)',
+                color: 'rgba(189, 189, 189, 0.7)'
+            },
+            {
+                id: 'hammerhead',
+                name: 'Hammerhead',
+                manufacturer: 'Aegis Dynamics',
+                role: 'Gunship',
+                price: '47,958,752 aUEC',
+                priceValue: 47958752,
+                cargo: 0,
+                attack: 10,
+                speed: 180,
+                defense: 9,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(66, 66, 66, 0.7)'
+            },
+            {
+                id: 'hawk',
+                name: 'Hawk',
+                manufacturer: 'Anvil Aerospace',
+                role: 'Bounty Hunter',
+                price: '2,646,000 aUEC',
+                priceValue: 2646000,
+                cargo: 0,
+                attack: 6,
+                speed: 230,
+                defense: 4,
+                location: 'Astro Armada (Area 18)',
+                color: 'rgba(79, 195, 247, 0.7)'
+            },
+            {
+                id: 'herald',
+                name: 'Herald',
+                manufacturer: 'Drake Interplanetary',
+                role: 'Data Runner',
+                price: '1,285,200 aUEC',
+                priceValue: 1285200,
+                cargo: 0,
+                attack: 3,
+                speed: 255,
+                defense: 4,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(255, 138, 101, 0.7)'
+            },
+            {
+                id: 'hornet_f7c_mk_i',
+                name: 'Hornet F7C Mk I',
+                manufacturer: 'Anvil Aerospace',
+                role: 'Medium Fighter',
+                price: '2,910,600 aUEC',
+                priceValue: 2910600,
+                cargo: 0,
+                attack: 7,
+                speed: 220,
+                defense: 6,
+                location: 'Astro Armada (Area 18)',
+                color: 'rgba(79, 195, 247, 0.7)'
+            },
+            {
+                id: 'hornet_f7c_mk_ii',
+                name: 'Hornet F7C Mk II',
+                manufacturer: 'Anvil Aerospace',
+                role: 'Medium Fighter',
+                price: '4,895,100 aUEC',
+                priceValue: 4895100,
+                cargo: 0,
+                attack: 8,
+                speed: 220,
+                defense: 6,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(79, 195, 247, 0.7)'
+            },
+            {
+                id: 'hornet_f7c_s_ghost_mk_i',
+                name: 'Hornet F7C-S Ghost Mk I',
+                manufacturer: 'Anvil Aerospace',
+                role: 'Stealth Fighter',
+                price: '3,307,500 aUEC',
+                priceValue: 3307500,
+                cargo: 0,
+                attack: 7,
+                speed: 220,
+                defense: 6,
+                location: 'Astro Armada (Area 18)',
+                color: 'rgba(79, 195, 247, 0.7)'
+            },
+            {
+                id: 'hornet_tracker_f7c_r_mk_i',
+                name: 'Hornet Tracker F7C-R Mk I',
+                manufacturer: 'Anvil Aerospace',
+                role: 'Recon',
+                price: '3,210,480 aUEC',
+                priceValue: 3210480,
+                cargo: 0,
+                attack: 6,
+                speed: 220,
+                defense: 6,
+                location: 'Astro Armada (Area 18)',
+                color: 'rgba(79, 195, 247, 0.7)'
+            },
+            {
+                id: 'hornet_wildfire_f7c_mk_1',
+                name: 'Hornet Wildfire F7C Mk 1',
+                manufacturer: 'Anvil Aerospace',
+                role: 'Combat Fighter',
+                price: '4,630,500 aUEC',
+                priceValue: 4630500,
+                cargo: 0,
+                attack: 8,
+                speed: 220,
+                defense: 6,
+                location: 'Astro Armada (Area 18)',
+                color: 'rgba(79, 195, 247, 0.7)'
+            },
+            {
+                id: 'hoverquad',
+                name: 'Hoverquad',
+                manufacturer: 'Greycat Industrial',
+                role: 'Hoverbike',
+                price: '56,700 aUEC',
+                priceValue: 56700,
+                cargo: 0,
+                attack: 1,
+                speed: 85,
+                defense: 2,
+                location: 'New Deal (Lorville), Astro Armada (Area 18)',
+                color: 'rgba(189, 189, 189, 0.7)'
+            },
+            {
+                id: 'hull_a',
+                name: 'Hull A',
+                manufacturer: 'MISC',
+                role: 'Freighter',
+                price: '1,701,000 aUEC',
+                priceValue: 1701000,
+                cargo: 64,
+                attack: 2,
+                speed: 195,
+                defense: 4,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(92, 107, 192, 0.7)'
+            },
+            {
+                id: 'hull_c',
+                name: 'Hull C',
+                manufacturer: 'MISC',
+                role: 'Cargo',
+                price: '16,537,500 aUEC',
+                priceValue: 16537500,
+                cargo: 4608,
+                attack: 2,
+                speed: 150,
+                defense: 5,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(92, 107, 192, 0.7)'
+            },
+            {
+                id: 'hurricane',
+                name: 'Hurricane',
+                manufacturer: 'Anvil Aerospace',
+                role: 'Heavy Fighter',
+                price: '5,556,600 aUEC',
+                priceValue: 5556600,
+                cargo: 0,
+                attack: 9,
+                speed: 210,
+                defense: 6,
+                location: 'Astro Armada (Area 18)',
+                color: 'rgba(79, 195, 247, 0.7)'
+            },
+            {
+                id: 'intrepid',
+                name: 'Intrepid',
+                manufacturer: 'Crusader Industries',
+                role: 'Scout',
+                price: '705,600 aUEC',
+                priceValue: 705600,
+                cargo: 8,
+                attack: 4,
+                speed: 240,
+                defense: 4,
+                location: 'New Deal (Lorville), Astro Armada (Area 18), Unknown',
+                color: 'rgba(126, 87, 194, 0.7)'
+            },
+            {
+                id: 'khartu_al',
+                name: 'Khartu-al',
+                manufacturer: 'Aopoa',
+                role: 'Scout',
+                price: '7,229,250 aUEC',
+                priceValue: 7229250,
+                cargo: 0,
+                attack: 6,
+                speed: 250,
+                defense: 5,
+                location: 'Astro Armada (Area 18)',
+                color: 'rgba(174, 213, 129, 0.7)'
+            },
+            {
+                id: 'lynx',
+                name: 'Lynx',
+                manufacturer: 'Origin Jumpworks',
+                role: 'Luxury Rover',
+                price: '136,080 aUEC',
+                priceValue: 136080,
+                cargo: 2,
+                attack: 1,
+                speed: 60,
+                defense: 5,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(186, 104, 200, 0.7)'
+            },
+            {
+                id: 'm50',
+                name: 'M50',
+                manufacturer: 'Origin Jumpworks',
+                role: 'Interceptor',
+                price: '1,499,400 aUEC',
+                priceValue: 1499400,
+                cargo: 0,
+                attack: 4,
+                speed: 280,
+                defense: 3,
+                location: 'New Deal (Lorville), Astro Armada (Area 18)',
+                color: 'rgba(186, 104, 200, 0.7)'
+            },
+            {
+                id: 'm2_starlifter',
+                name: 'M2 Starlifter',
+                manufacturer: 'Crusader Industries',
+                role: 'Military Transport',
+                price: '29,484,000 aUEC',
+                priceValue: 29484000,
+                cargo: 522,
+                attack: 6,
+                speed: 200,
+                defense: 8,
+                location: 'New Deal (Lorville), Crusader Showroom (Orison)',
+                color: 'rgba(126, 87, 194, 0.7)'
+            },
+            {
+                id: 'mantis',
+                name: 'Mantis',
+                manufacturer: 'Aopoa',
+                role: 'Quantum Enforcement',
+                price: '3,402,000 aUEC',
+                priceValue: 3402000,
+                cargo: 0,
+                attack: 4,
+                speed: 210,
+                defense: 5,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(174, 213, 129, 0.7)'
+            },
+            {
+                id: 'mercury_star_runner',
+                name: 'Mercury Star Runner',
+                manufacturer: 'Crusader Industries',
+                role: 'Data Runner',
+                price: '12,285,000 aUEC',
+                priceValue: 12285000,
+                cargo: 114,
+                attack: 5,
+                speed: 225,
+                defense: 6,
+                location: 'Crusader Showroom (Orison)',
+                color: 'rgba(126, 87, 194, 0.7)'
+            },
+            {
+                id: 'mole',
+                name: 'MOLE',
+                manufacturer: 'ARGO Astronautics',
+                role: 'Mining',
+                price: '8,930,250 aUEC',
+                priceValue: 8930250,
+                cargo: 48,
+                attack: 2,
+                speed: 175,
+                defense: 6,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(121, 85, 72, 0.7)'
+            },
+            {
+                id: 'mpuv_cargo',
+                name: 'MPUV Cargo',
+                manufacturer: 'ARGO Astronautics',
+                role: 'Utility',
+                price: '330,750 aUEC',
+                priceValue: 330750,
+                cargo: 4,
+                attack: 0,
+                speed: 180,
+                defense: 2,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(121, 85, 72, 0.7)'
+            },
+            {
+                id: 'mpuv_personnel',
+                name: 'MPUV Personnel',
+                manufacturer: 'ARGO Astronautics',
+                role: 'Transport',
+                price: '378,000 aUEC',
+                priceValue: 378000,
+                cargo: 0,
+                attack: 0,
+                speed: 180,
+                defense: 2,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(121, 85, 72, 0.7)'
+            },
+            {
+                id: 'mpuv_tractor',
+                name: 'MPUV Tractor',
+                manufacturer: 'ARGO Astronautics',
+                role: 'Salvage',
+                price: '415,800 aUEC',
+                priceValue: 415800,
+                cargo: 2,
+                attack: 0,
+                speed: 180,
+                defense: 2,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(121, 85, 72, 0.7)'
+            },
+            {
+                id: 'mule',
+                name: 'Mule',
+                manufacturer: 'Drake Interplanetary',
+                role: 'Utility Vehicle',
+                price: '68,040 aUEC',
+                priceValue: 68040,
+                cargo: 2,
+                attack: 1,
+                speed: 45,
+                defense: 4,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(255, 138, 101, 0.7)'
+            },
+            {
+                id: 'mustang_alpha',
+                name: 'Mustang Alpha',
+                manufacturer: 'Consolidated Outland',
+                role: 'Starter',
+                price: '642,600 aUEC',
+                priceValue: 642600,
+                cargo: 4,
+                attack: 3,
+                speed: 205,
+                defense: 3,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(255, 193, 7, 0.7)'
+            },
+            {
+                id: 'mustang_beta',
+                name: 'Mustang Beta',
+                manufacturer: 'Consolidated Outland',
+                role: 'Exploration',
+                price: '655,200 aUEC',
+                priceValue: 655200,
+                cargo: 0,
+                attack: 3,
+                speed: 205,
+                defense: 3,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(255, 193, 7, 0.7)'
+            },
+            {
+                id: 'mustang_delta',
+                name: 'Mustang Delta',
+                manufacturer: 'Consolidated Outland',
+                role: 'Combat',
+                price: '1,228,500 aUEC',
+                priceValue: 1228500,
+                cargo: 0,
+                attack: 5,
+                speed: 205,
+                defense: 4,
+                location: 'Astro Armada (Area 18)',
+                color: 'rgba(255, 193, 7, 0.7)'
+            },
+            {
+                id: 'mustang_gamma',
+                name: 'Mustang Gamma',
+                manufacturer: 'Consolidated Outland',
+                role: 'Racing',
+                price: '1,178,100 aUEC',
+                priceValue: 1178100,
+                cargo: 0,
+                attack: 2,
+                speed: 280,
+                defense: 3,
+                location: 'Astro Armada (Area 18)',
+                color: 'rgba(255, 193, 7, 0.7)'
+            },
+            {
+                id: 'nomad',
+                name: 'Nomad',
+                manufacturer: 'Consolidated Outland',
+                role: 'Light Freighter',
+                price: '1,512,000 aUEC',
+                priceValue: 1512000,
+                cargo: 24,
+                attack: 4,
+                speed: 205,
+                defense: 4,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(255, 193, 7, 0.7)'
+            },
+            {
+                id: 'nova',
+                name: 'Nova',
+                manufacturer: 'Tumbril',
+                role: 'Tank',
+                price: '907,200 aUEC',
+                priceValue: 907200,
+                cargo: 0,
+                attack: 9,
+                speed: 55,
+                defense: 9,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(121, 85, 72, 0.7)'
+            },
+            {
+                id: 'nox',
+                name: 'Nox',
+                manufacturer: 'Aopoa',
+                role: 'Hoverbike',
+                price: '722,925 aUEC',
+                priceValue: 722925,
+                cargo: 0,
+                attack: 2,
+                speed: 110,
+                defense: 2,
+                location: 'Astro Armada (Area 18)',
+                color: 'rgba(174, 213, 129, 0.7)'
+            },
+            {
+                id: 'p52_merlin',
+                name: 'P-52 Merlin',
+                manufacturer: 'Kruger Intergalactic',
+                role: 'Snub Fighter',
+                price: '283,500 aUEC',
+                priceValue: 283500,
+                cargo: 0,
+                attack: 4,
+                speed: 230,
+                defense: 2,
+                location: 'Astro Armada (Area 18)',
+                color: 'rgba(100, 181, 246, 0.7)'
+            },
+            {
+                id: 'p72_archimedes',
+                name: 'P72 Archimedes',
+                manufacturer: 'Kruger Intergalactic',
+                role: 'Snub Fighter',
+                price: '449,820 aUEC',
+                priceValue: 449820,
+                cargo: 0,
+                attack: 4,
+                speed: 240,
+                defense: 2,
+                location: 'Astro Armada (Area 18)',
+                color: 'rgba(100, 181, 246, 0.7)'
+            },
+            {
+                id: 'pisces_c8',
+                name: 'Pisces C8',
+                manufacturer: 'Anvil Aerospace',
+                role: 'Snub Transport',
+                price: '745,290 aUEC',
+                priceValue: 745290,
+                cargo: 4,
+                attack: 2,
+                speed: 220,
+                defense: 3,
+                location: 'Astro Armada (Area 18)',
+                color: 'rgba(79, 195, 247, 0.7)'
+            },
+            {
+                id: 'pisces_c8r',
+                name: 'Pisces C8R',
+                manufacturer: 'Anvil Aerospace',
+                role: 'Medical',
+                price: '555,660 aUEC',
+                priceValue: 555660,
+                cargo: 0,
+                attack: 2,
+                speed: 220,
+                defense: 3,
+                location: 'Astro Armada (Area 18)',
+                color: 'rgba(79, 195, 247, 0.7)'
+            },
+            {
+                id: 'pisces_c8x',
+                name: 'Pisces C8X',
+                manufacturer: 'Anvil Aerospace',
+                role: 'Scout',
+                price: '515,970 aUEC',
+                priceValue: 515970,
+                cargo: 4,
+                attack: 3,
+                speed: 220,
+                defense: 3,
+                location: 'Astro Armada (Area 18)',
+                color: 'rgba(79, 195, 247, 0.7)'
+            },
+            {
+                id: 'polaris',
+                name: 'Polaris',
+                manufacturer: 'Roberts Space Industries',
+                role: 'Corvette',
+                price: 'Not available',
+                priceValue: 0,
+                cargo: 144,
+                attack: 10,
+                speed: 130,
+                defense: 9,
+                location: 'Not flight-ready',
+                color: 'rgba(240, 98, 146, 0.7)'
+            },
+            {
+                id: 'prospector',
+                name: 'Prospector',
+                manufacturer: 'MISC',
+                role: 'Mining',
+                price: '2,929,500 aUEC',
+                priceValue: 2929500,
+                cargo: 32,
+                attack: 2,
+                speed: 190,
+                defense: 5,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(92, 107, 192, 0.7)'
+            },
+            {
+                id: 'prowler',
+                name: 'Esperia Prowler',
+                manufacturer: 'Esperia',
+                role: 'Dropship',
+                price: '18,711,000 aUEC',
+                priceValue: 18711000,
+                cargo: 24,
+                attack: 7,
+                speed: 210,
+                defense: 8,
+                location: 'Astro Armada (Area 18)',
+                color: 'rgba(174, 213, 129, 0.7)'
+            },
+            {
+                id: 'pulse',
+                name: 'Pulse',
+                manufacturer: 'Tumbril',
+                role: 'Ground Vehicle',
+                price: '185,220 aUEC',
+                priceValue: 185220,
+                cargo: 0,
+                attack: 3,
+                speed: 85,
+                defense: 4,
+                location: 'New Deal (Lorville), Astro Armada (Area 18)',
+                color: 'rgba(121, 85, 72, 0.7)'
+            },
+            {
+                id: 'pulse_lx',
+                name: 'Pulse LX',
+                manufacturer: 'Tumbril',
+                role: 'Luxury Ground Vehicle',
+                price: '211,680 aUEC',
+                priceValue: 211680,
+                cargo: 0,
+                attack: 2,
+                speed: 90,
+                defense: 4,
+                location: 'New Deal (Lorville), Astro Armada (Area 18)',
+                color: 'rgba(121, 85, 72, 0.7)'
+            },
+            {
+                id: 'raft',
+                name: 'RAFT',
+                manufacturer: 'ARGO Astronautics',
+                role: 'Cargo',
+                price: '3,543,750 aUEC',
+                priceValue: 3543750,
+                cargo: 96,
+                attack: 2,
+                speed: 185,
+                defense: 5,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(121, 85, 72, 0.7)'
+            },
+            {
+                id: 'razor',
+                name: 'Razor',
+                manufacturer: 'MISC',
+                role: 'Racing',
+                price: '1,863,540 aUEC',
+                priceValue: 1863540,
+                cargo: 0,
+                attack: 3,
+                speed: 280,
+                defense: 3,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(92, 107, 192, 0.7)'
+            },
+            {
+                id: 'razor_ex',
+                name: 'Razor EX',
+                manufacturer: 'MISC',
+                role: 'Stealth Racing',
+                price: '1,757,700 aUEC',
+                priceValue: 1757700,
+                cargo: 0,
+                attack: 2,
+                speed: 275,
+                defense: 3,
+                location: 'New Deal (Lorville), Astro Armada (Area 18)',
+                color: 'rgba(92, 107, 192, 0.7)'
+            },
+            {
+                id: 'razor_lx',
+                name: 'Razor LX',
+                manufacturer: 'MISC',
+                role: 'Luxury Racing',
+                price: '1,927,800 aUEC',
+                priceValue: 1927800,
+                cargo: 0,
+                attack: 2,
+                speed: 285,
+                defense: 3,
+                location: 'New Deal (Lorville), Astro Armada (Area 18)',
+                color: 'rgba(92, 107, 192, 0.7)'
+            },
+            {
+                id: 'reclaimer',
+                name: 'Reclaimer',
+                manufacturer: 'Aegis Dynamics',
+                role: 'Salvage',
+                price: '31,752,000 aUEC',
+                priceValue: 31752000,
+                cargo: 180,
+                attack: 4,
+                speed: 150,
+                defense: 8,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(66, 66, 66, 0.7)'
+            },
+            {
+                id: 'redeemer',
+                name: 'Redeemer',
+                manufacturer: 'Aegis Dynamics',
+                role: 'Gunship',
+                price: '17,199,000 aUEC',
+                priceValue: 17199000,
+                cargo: 24,
+                attack: 9,
+                speed: 195,
+                defense: 8,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(66, 66, 66, 0.7)'
+            },
+            {
+                id: 'reliant_kore',
+                name: 'Reliant Kore',
+                manufacturer: 'MISC',
+                role: 'Multi-Role',
+                price: '1,719,900 aUEC',
+                priceValue: 1719900,
+                cargo: 4,
+                attack: 4,
+                speed: 210,
+                defense: 4,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(92, 107, 192, 0.7)'
+            },
+            {
+                id: 'reliant_mako',
+                name: 'Reliant Mako',
+                manufacturer: 'MISC',
+                role: 'News Van',
+                price: '2,513,700 aUEC',
+                priceValue: 2513700,
+                cargo: 0,
+                attack: 3,
+                speed: 210,
+                defense: 4,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(92, 107, 192, 0.7)'
+            },
+            {
+                id: 'reliant_sen',
+                name: 'Reliant Sen',
+                manufacturer: 'MISC',
+                role: 'Science',
+                price: '2,249,100 aUEC',
+                priceValue: 2249100,
+                cargo: 0,
+                attack: 3,
+                speed: 210,
+                defense: 4,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(92, 107, 192, 0.7)'
+            },
+            {
+                id: 'reliant_tana',
+                name: 'Reliant Tana',
+                manufacturer: 'MISC',
+                role: 'Combat',
+                price: '1,984,500 aUEC',
+                priceValue: 1984500,
+                cargo: 1,
+                attack: 6,
+                speed: 210,
+                defense: 4,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(92, 107, 192, 0.7)'
+            },
+            {
+                id: 'retaliator',
+                name: 'Retaliator',
+                manufacturer: 'Aegis Dynamics',
+                role: 'Bomber',
+                price: '7,938,000 aUEC',
+                priceValue: 7938000,
+                cargo: 0,
+                attack: 9,
+                speed: 185,
+                defense: 8,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(66, 66, 66, 0.7)'
+            },
+            {
+                id: 'sabre',
+                name: 'Sabre',
+                manufacturer: 'Aegis Dynamics',
+                role: 'Stealth Fighter',
+                price: '4,498,200 aUEC',
+                priceValue: 4498200,
+                cargo: 0,
+                attack: 8,
+                speed: 270,
+                defense: 6,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(66, 66, 66, 0.7)'
+            },
+            {
+                id: 'sabre_comet',
+                name: 'Sabre Comet',
+                manufacturer: 'Aegis Dynamics',
+                role: 'Stealth Fighter',
+                price: '4,895,100 aUEC',
+                priceValue: 4895100,
+                cargo: 0,
+                attack: 8,
+                speed: 270,
+                defense: 6,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(66, 66, 66, 0.7)'
+            },
+            {
+                id: 'sabre_firebird',
+                name: 'Sabre Firebird',
+                manufacturer: 'Aegis Dynamics',
+                role: 'Stealth Fighter',
+                price: '5,874,120 aUEC',
+                priceValue: 5874120,
+                cargo: 0,
+                attack: 8,
+                speed: 270,
+                defense: 6,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(66, 66, 66, 0.7)'
+            },
+            {
+                id: 'sabre_peregrine',
+                name: 'Sabre Peregrine',
+                manufacturer: 'Aegis Dynamics',
+                role: 'Stealth Fighter',
+                price: '4,048,380 aUEC',
+                priceValue: 4048380,
+                cargo: 0,
+                attack: 8,
+                speed: 270,
+                defense: 6,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(66, 66, 66, 0.7)'
+            },
+            {
+                id: 'san_tok_yai',
+                name: 'San\'tok.yāi',
+                manufacturer: 'Esperia',
+                role: 'Alien Fighter',
+                price: '9,355,500 aUEC',
+                priceValue: 9355500,
+                cargo: 0,
+                attack: 8,
+                speed: 230,
+                defense: 7,
+                location: 'Astro Armada (Area 18)',
+                color: 'rgba(174, 213, 129, 0.7)'
+            },
+            {
+                id: 'scorpius',
+                name: 'Scorpius',
+                manufacturer: 'Roberts Space Industries',
+                role: 'Heavy Fighter',
+                price: '5,443,200 aUEC',
+                priceValue: 5443200,
+                cargo: 0,
+                attack: 8,
+                speed: 210,
+                defense: 7,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(240, 98, 146, 0.7)'
+            },
+            {
+                id: 'scorpius_antares',
+                name: 'Scorpius Antares',
+                manufacturer: 'Roberts Space Industries',
+                role: 'EMP Fighter',
+                price: '5,216,400 aUEC',
+                priceValue: 5216400,
+                cargo: 0,
+                attack: 6,
+                speed: 210,
+                defense: 7,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(240, 98, 146, 0.7)'
+            },
+            {
+                id: 'spartan',
+                name: 'Spartan',
+                manufacturer: 'Anvil Aerospace',
+                role: 'APC',
+                price: '846,720 aUEC',
+                priceValue: 846720,
+                cargo: 0,
+                attack: 4,
+                speed: 65,
+                defense: 7,
+                location: 'New Deal (Lorville), Astro Armada (Area 18)',
+                color: 'rgba(79, 195, 247, 0.7)'
+            },
+            {
+                id: 'srV',
+                name: 'SRV',
+                manufacturer: 'ARGO Astronautics',
+                role: 'Tug',
+                price: '3,969,000 aUEC',
+                priceValue: 3969000,
+                cargo: 0,
+                attack: 2,
+                speed: 185,
+                defense: 5,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(121, 85, 72, 0.7)'
+            },
+            {
+                id: 'starlancer_max',
+                name: 'Starlancer MAX',
+                manufacturer: 'MISC',
+                role: 'Freighter',
+                price: '8,820,000 aUEC',
+                priceValue: 8820000,
+                cargo: 120,
+                attack: 4,
+                speed: 195,
+                defense: 7,
+                location: 'New Deal (Lorville), Astro Armada (Area 18)',
+                color: 'rgba(92, 107, 192, 0.7)'
+            },
+            {
+                id: 'star_fighter_inferno',
+                name: 'Star Fighter Inferno',
+                manufacturer: 'Crusader Industries',
+                role: 'Heavy Fighter',
+                price: '4,725,000 aUEC',
+                priceValue: 4725000,
+                cargo: 0,
+                attack: 8,
+                speed: 210,
+                defense: 6,
+                location: 'Crusader Showroom (Orison)',
+                color: 'rgba(126, 87, 194, 0.7)'
+            },
+            {
+                id: 'star_fighter_ion',
+                name: 'Star Fighter Ion',
+                manufacturer: 'Crusader Industries',
+                role: 'Heavy Fighter',
+                price: '4,725,000 aUEC',
+                priceValue: 4725000,
+                cargo: 0,
+                attack: 8,
+                speed: 210,
+                defense: 6,
+                location: 'Crusader Showroom (Orison)',
+                color: 'rgba(126, 87, 194, 0.7)'
+            },
+            {
+                id: 'starfarer',
+                name: 'Starfarer',
+                manufacturer: 'MISC',
+                role: 'Fuel Tanker',
+                price: '13,230,000 aUEC',
+                priceValue: 13230000,
+                cargo: 332,
+                attack: 4,
+                speed: 180,
+                defense: 7,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(92, 107, 192, 0.7)'
+            },
+            {
+                id: 'starfarer_gemini',
+                name: 'Starfarer Gemini',
+                manufacturer: 'MISC',
+                role: 'Military Tanker',
+                price: '14,994,000 aUEC',
+                priceValue: 14994000,
+                cargo: 332,
+                attack: 5,
+                speed: 180,
+                defense: 8,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(92, 107, 192, 0.7)'
+            },
+            {
+                id: 'storm',
+                name: 'Storm',
+                manufacturer: 'Tumbril',
+                role: 'Ground Vehicle',
+                price: '453,600 aUEC',
+                priceValue: 453600,
+                cargo: 0,
+                attack: 5,
+                speed: 80,
+                defense: 5,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(121, 85, 72, 0.7)'
+            },
+            {
+                id: 'storm_aa',
+                name: 'Storm AA',
+                manufacturer: 'Tumbril',
+                role: 'Anti-Aircraft',
+                price: '476,280 aUEC',
+                priceValue: 476280,
+                cargo: 0,
+                attack: 7,
+                speed: 75,
+                defense: 5,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(121, 85, 72, 0.7)'
+            },
+            {
+                id: 'supr_hornet_f7c_mk_i',
+                name: 'Super Hornet F7C-M Mk I',
+                manufacturer: 'Anvil Aerospace',
+                role: 'Heavy Fighter',
+                price: '4,762,800 aUEC',
+                priceValue: 4762800,
+                cargo: 0,
+                attack: 8,
+                speed: 220,
+                defense: 7,
+                location: 'Astro Armada (Area 18)',
+                color: 'rgba(79, 195, 247, 0.7)'
+            },
+            {
+                id: 'talon',
+                name: 'Talon',
+                manufacturer: 'Esperia',
+                role: 'Light Fighter',
+                price: '3,260,250 aUEC',
+                priceValue: 3260250,
+                cargo: 0,
+                attack: 7,
+                speed: 230,
+                defense: 5,
+                location: 'Astro Armada (Area 18)',
+                color: 'rgba(174, 213, 129, 0.7)'
+            },
+            {
+                id: 'talon_shrike',
+                name: 'Talon Shrike',
+                manufacturer: 'Esperia',
+                role: 'Missile Boat',
+                price: '3,260,250 aUEC',
+                priceValue: 3260250,
+                cargo: 0,
+                attack: 8,
+                speed: 230,
+                defense: 5,
+                location: 'Astro Armada (Area 18)',
+                color: 'rgba(174, 213, 129, 0.7)'
+            },
+            {
+                id: 'terrapin',
+                name: 'Terrapin',
+                manufacturer: 'Anvil Aerospace',
+                role: 'Scout',
+                price: '5,433,120 aUEC',
+                priceValue: 5433120,
+                cargo: 14,
+                attack: 3,
+                speed: 190,
+                defense: 9,
+                location: 'Astro Armada (Area 18)',
+                color: 'rgba(79, 195, 247, 0.7)'
+            },
+            {
+                id: 'terrapin_medic',
+                name: 'Terrapin Medic',
+                manufacturer: 'Anvil Aerospace',
+                role: 'Medical',
+                price: '5,704,770 aUEC',
+                priceValue: 5704770,
+                cargo: 16,
+                attack: 3,
+                speed: 190,
+                defense: 9,
+                location: 'Astro Armada (Area 18)',
+                color: 'rgba(79, 195, 247, 0.7)'
+            },
+            {
+                id: 'ursa_medivac',
+                name: 'Ursa Medivac',
+                manufacturer: 'Roberts Space Industries',
+                role: 'Medical Vehicle',
+                price: '124,740 aUEC',
+                priceValue: 124740,
+                cargo: 2,
+                attack: 1,
+                speed: 50,
+                defense: 6,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(66, 133, 244, 0.7)'
+            },
+            {
+                id: 'ursa_rover',
+                name: 'Ursa Rover',
+                manufacturer: 'Roberts Space Industries',
+                role: 'Exploration Vehicle',
+                price: '113,400 aUEC',
+                priceValue: 113400,
+                cargo: 2,
+                attack: 1,
+                speed: 50,
+                defense: 5,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(66, 133, 244, 0.7)'
+            },
+            {
+                id: 'valkyrie',
+                name: 'Valkyrie',
+                manufacturer: 'Anvil Aerospace',
+                role: 'Dropship',
+                price: '19,845,000 aUEC',
+                priceValue: 19845000,
+                cargo: 30,
+                attack: 7,
+                speed: 200,
+                defense: 8,
+                location: 'Astro Armada (Area 18)',
+                color: 'rgba(79, 195, 247, 0.7)'
+            },
+            {
+                id: 'vanguard_harbinger',
+                name: 'Vanguard Harbinger',
+                manufacturer: 'Aegis Dynamics',
+                role: 'Heavy Bomber',
+                price: '11,510,100 aUEC',
+                priceValue: 11510100,
+                cargo: 0,
+                attack: 9,
+                speed: 220,
+                defense: 8,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(66, 66, 66, 0.7)'
+            },
+            {
+                id: 'vanguard_hoplite',
+                name: 'Vanguard Hoplite',
+                manufacturer: 'Aegis Dynamics',
+                role: 'Dropship',
+                price: '9,327,150 aUEC',
+                priceValue: 9327150,
+                cargo: 0,
+                attack: 7,
+                speed: 220,
+                defense: 8,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(66, 66, 66, 0.7)'
+            },
+            {
+                id: 'vanguard_sentinel',
+                name: 'Vanguard Sentinel',
+                manufacturer: 'Aegis Dynamics',
+                role: 'Electronic Warfare',
+                price: '10,914,750 aUEC',
+                priceValue: 10914750,
+                cargo: 0,
+                attack: 7,
+                speed: 220,
+                defense: 8,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(66, 66, 66, 0.7)'
+            },
+            {
+                id: 'vanguard_warden',
+                name: 'Vanguard Warden',
+                manufacturer: 'Aegis Dynamics',
+                role: 'Heavy Fighter',
+                price: '10,319,400 aUEC',
+                priceValue: 10319400,
+                cargo: 0,
+                attack: 8,
+                speed: 220,
+                defense: 8,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(66, 66, 66, 0.7)'
+            },
+            {
+                id: 'vulture',
+                name: 'Vulture',
+                manufacturer: 'Drake Interplanetary',
+                role: 'Salvage',
+                price: '2,646,000 aUEC',
+                priceValue: 2646000,
+                cargo: 12,
+                attack: 3,
+                speed: 205,
+                defense: 5,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(255, 138, 101, 0.7)'
+            },
+            {
+                id: 'x1',
+                name: 'X1',
+                manufacturer: 'Origin Jumpworks',
+                role: 'Velocity',
+                price: '105,840 aUEC',
+                priceValue: 105840,
+                cargo: 0,
+                attack: 0,
+                speed: 220,
+                defense: 2,
+                location: 'Astro Armada (Area 18)',
+                color: 'rgba(186, 104, 200, 0.7)'
+            },
+            {
+                id: 'x1_force',
+                name: 'X1 Force',
+                manufacturer: 'Origin Jumpworks',
+                role: 'Combat',
+                price: '132,300 aUEC',
+                priceValue: 132300,
+                cargo: 0,
+                attack: 3,
+                speed: 240,
+                defense: 3,
+                location: 'New Deal (Lorville), Astro Armada (Area 18)',
+                color: 'rgba(186, 104, 200, 0.7)'
+            },
+            {
+                id: 'x1_velocity',
+                name: 'X1 Velocity',
+                manufacturer: 'Origin Jumpworks',
+                role: 'Racing',
+                price: '119,070 aUEC',
+                priceValue: 119070,
+                cargo: 0,
+                attack: 0,
+                speed: 250,
+                defense: 2,
+                location: 'New Deal (Lorville), Astro Armada (Area 18)',
+                color: 'rgba(186, 104, 200, 0.7)'
+            },
+            {
+                id: 'zeus_mk_ii_cl',
+                name: 'Zeus Mk II CL',
+                manufacturer: 'Roberts Space Industries',
+                role: 'Cargo',
+                price: '6,804,000 aUEC',
+                priceValue: 6804000,
+                cargo: 128,
+                attack: 5,
+                speed: 210,
+                defense: 6,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(240, 98, 146, 0.7)'
+            },
+            {
+                id: 'zeus_mk_ii_es',
+                name: 'Zeus Mk II ES',
+                manufacturer: 'Roberts Space Industries',
+                role: 'Exploration',
+                price: '4,422,600 aUEC',
+                priceValue: 4422600,
+                cargo: 40,
+                attack: 5,
+                speed: 210,
+                defense: 6,
+                location: 'New Deal (Lorville)',
+                color: 'rgba(240, 98, 146, 0.7)'
+            }
+        ];
+
         // Initialize the app
-        function initApp() {
-            renderExpensesTable();
-            updateSummary();
-            updateCategoryBreakdown();
-            renderChart();
+        document.addEventListener('DOMContentLoaded', function() {
+            const ship1Select = document.getElementById('ship1Select');
+            const ship2Select = document.getElementById('ship2Select');
+            let comparisonChart = null;
             
-            // Add event listeners
-            addButton.addEventListener('click', handleAddExpense);
-            addButton.addEventListener('touchend', handleAddExpense);
-        }
-        
-        // Handle add expense
-        function handleAddExpense(e) {
-            // Prevent default behavior for touch events
-            if (e.type === 'touchend') {
-                e.preventDefault();
-            }
-            
-            const amount = parseFloat(amountInput.value);
-            const category = categorySelect.value;
-            const description = descriptionInput.value.trim();
-            const date = dateInput.value;
-            
-            if (!amount || isNaN(amount) || amount <= 0) {
-                showNotification('Please enter a valid amount', 'error');
-                return;
-            }
-            
-            if (!date) {
-                showNotification('Please select a date', 'error');
-                return;
-            }
-            
-            // Create expense object
-            const expense = {
-                id: Date.now(),
-                amount: amount,
-                category: category,
-                description: description || 'No description',
-                date: date
-            };
-            
-            // Add to expenses array
-            expenses.push(expense);
-            
-            // Save to localStorage
-            localStorage.setItem('expenses', JSON.stringify(expenses));
-            
-            // Clear form
-            amountInput.value = '';
-            descriptionInput.value = '';
-            dateInput.value = formatDate(today);
-            
-            // Show success notification
-            showNotification('Expense added successfully!');
-            
-            // Update UI
-            initApp();
-            
-            // Close keyboard on mobile
-            amountInput.blur();
-            descriptionInput.blur();
-        }
-        
-        // Show notification
-        function showNotification(message, type = 'success') {
-            notification.textContent = message;
-            notification.className = 'notification show';
-            if (type === 'error') {
-                notification.classList.add('error');
-            } else {
-                notification.classList.remove('error');
-            }
-            
-            setTimeout(() => {
-                notification.className = 'notification';
-            }, 3000);
-        }
-        
-        // Render expenses table
-        function renderExpensesTable() {
-            if (expenses.length === 0) {
-                expensesTableBody.innerHTML = `
-                    <tr>
-                        <td colspan="5" class="no-expenses">No expenses recorded yet. Add your first expense!</td>
-                    </tr>
-                `;
-                return;
-            }
-            
-            // Sort expenses by date (newest first)
-            const sortedExpenses = [...expenses].sort((a, b) => 
-                new Date(b.date) - new Date(a.date)
-            );
-            
-            let tableHTML = '';
-            
-            sortedExpenses.forEach(expense => {
-                const formattedDate = new Date(expense.date).toLocaleDateString();
-                const formattedAmount = `$${expense.amount.toFixed(2)}`;
+            // Populate ship dropdowns
+            ships.forEach(ship => {
+                const option1 = document.createElement('option');
+                option1.value = ship.id;
+                option1.textContent = ship.name;
+                ship1Select.appendChild(option1);
                 
-                tableHTML += `
-                    <tr>
-                        <td>${formattedDate}</td>
-                        <td>
-                            <div class="category-name">
-                                <span class="category-icon">${getCategoryIcon(expense.category)}</span>
-                                ${expense.category}
-                            </div>
-                        </td>
-                        <td>${expense.description}</td>
-                        <td><strong>${formattedAmount}</strong></td>
-                        <td>
-                            <button class="action-btn" onclick="deleteExpense(${expense.id})">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `;
+                const option2 = document.createElement('option');
+                option2.value = ship.id;
+                option2.textContent = ship.name;
+                ship2Select.appendChild(option2);
             });
             
-            expensesTableBody.innerHTML = tableHTML;
-        }
-        
-        // Delete an expense
-        function deleteExpense(id) {
-            if (confirm('Are you sure you want to delete this expense?')) {
-                expenses = expenses.filter(expense => expense.id !== id);
-                localStorage.setItem('expenses', JSON.stringify(expenses));
-                initApp();
-                showNotification('Expense deleted successfully');
+            // Set default selections
+            ship1Select.value = 'caterpillar';
+            ship2Select.value = 'c2_starlifter';
+            
+            // Add event listeners for ship selection
+            ship1Select.addEventListener('change', updateComparison);
+            ship2Select.addEventListener('change', updateComparison);
+            
+            // Initialize comparison with default ships
+            updateComparison();
+            
+            // Update comparison when ships are selected
+            function updateComparison() {
+                const ship1Id = ship1Select.value;
+                const ship2Id = ship2Select.value;
+                
+                if (!ship1Id || !ship2Id) return;
+                
+                const ship1 = ships.find(s => s.id === ship1Id);
+                const ship2 = ships.find(s => s.id === ship2Id);
+                
+                // Update ship stats cards
+                updateShipStats('ship1', ship1);
+                updateShipStats('ship2', ship2);
+                
+                // Update comparison chart
+                updateChart(ship1, ship2);
             }
-        }
-        
-        // Update summary cards
-        function updateSummary() {
-            // Calculate total expenses
-            const total = expenses.reduce((sum, expense) => sum + expense.amount, 0);
-            totalAmountEl.textContent = `$${total.toFixed(2)}`;
             
-            // Calculate this month's expenses
-            const currentMonth = today.getMonth();
-            const currentYear = today.getFullYear();
-            const monthExpenses = expenses.filter(expense => {
-                const expenseDate = new Date(expense.date);
-                return expenseDate.getMonth() === currentMonth && 
-                       expenseDate.getFullYear() === currentYear;
-            });
-            const monthTotal = monthExpenses.reduce((sum, expense) => sum + expense.amount, 0);
-            monthAmountEl.textContent = `$${monthTotal.toFixed(2)}`;
+            // Update ship stats display
+            function updateShipStats(prefix, ship) {
+                document.getElementById(`${prefix}Manufacturer`).textContent = ship.manufacturer;
+                document.getElementById(`${prefix}Role`).textContent = ship.role;
+                document.getElementById(`${prefix}Price`).textContent = ship.price;
+                document.getElementById(`${prefix}Cargo`).textContent = ship.cargo + (ship.cargo > 10 ? ' SCU' : '');
+                document.getElementById(`${prefix}Attack`).textContent = ship.attack + '/10';
+                document.getElementById(`${prefix}Speed`).textContent = ship.speed + ' m/s';
+                document.getElementById(`${prefix}Defense`).textContent = ship.defense + '/10';
+                document.getElementById(`${prefix}Location`).textContent = ship.location;
+                
+                // Update card title with ship name
+                document.getElementById(`${prefix}Stats`).querySelector('.stat-card-title').textContent = ship.name;
+            }
             
-            // Calculate average daily expense
-            const dailyAverage = expenses.length > 0 ? total / expenses.length : 0;
-            avgDailyEl.textContent = `$${dailyAverage.toFixed(2)}`;
-        }
-        
-        // Update category breakdown
-        function updateCategoryBreakdown() {
-            // Group expenses by category
-            const categories = {};
-            expenses.forEach(expense => {
-                if (categories[expense.category]) {
-                    categories[expense.category] += expense.amount;
-                } else {
-                    categories[expense.category] = expense.amount;
+            // Update the comparison chart
+            function updateChart(ship1, ship2) {
+                const ctx = document.getElementById('comparisonChart').getContext('2d');
+                
+                // Destroy previous chart if it exists
+                if (comparisonChart) {
+                    comparisonChart.destroy();
                 }
-            });
-            
-            // Create HTML for category list
-            let categoryHTML = '';
-            const totalAmount = expenses.reduce((sum, expense) => sum + expense.amount, 0);
-            
-            for (const category in categories) {
-                const percentage = totalAmount > 0 ? (categories[category] / totalAmount) * 100 : 0;
                 
-                categoryHTML += `
-                    <div class="category-item">
-                        <div class="category-name">
-                            <span class="category-icon">${getCategoryIcon(category)}</span>
-                            ${category}
-                        </div>
-                        <div>
-                            <strong>$${categories[category].toFixed(2)}</strong>
-                            <span> (${percentage.toFixed(1)}%)</span>
-                        </div>
-                    </div>
-                `;
+                // Create new chart
+                comparisonChart = new Chart(ctx, {
+                    type: 'radar',
+                    data: {
+                        labels: ['Price (aUEC)', 'Cargo (SCU)', 'Attack Rating', 'Speed (m/s)', 'Defense Rating'],
+                        datasets: [
+                            {
+                                label: ship1.name,
+                                data: [
+                                    normalizeValue(ship1.priceValue, 0, 70000000),
+                                    normalizeValue(ship1.cargo, 0, 700),
+                                    ship1.attack,
+                                    normalizeValue(ship1.speed, 0, 300),
+                                    ship1.defense
+                                ],
+                                backgroundColor: ship1.color.replace('0.7', '0.25'),
+                                borderColor: ship1.color.replace('0.7', '1'),
+                                borderWidth: 3,
+                                pointBackgroundColor: ship1.color.replace('0.7', '1'),
+                                pointBorderColor: '#fff',
+                                pointHoverBackgroundColor: '#fff',
+                                pointHoverBorderColor: ship1.color.replace('0.7', '1'),
+                                pointHoverRadius: 7,
+                                pointRadius: 5
+                            },
+                            {
+                                label: ship2.name,
+                                data: [
+                                    normalizeValue(ship2.priceValue, 0, 70000000),
+                                    normalizeValue(ship2.cargo, 0, 700),
+                                    ship2.attack,
+                                    normalizeValue(ship2.speed, 0, 300),
+                                    ship2.defense
+                                ],
+                                backgroundColor: ship2.color.replace('0.7', '0.25'),
+                                borderColor: ship2.color.replace('0.7', '1'),
+                                borderWidth: 3,
+                                pointBackgroundColor: ship2.color.replace('0.7', '1'),
+                                pointBorderColor: '#fff',
+                                pointHoverBackgroundColor: '#fff',
+                                pointHoverBorderColor: ship2.color.replace('0.7', '1'),
+                                pointHoverRadius: 7,
+                                pointRadius: 5
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            r: {
+                                angleLines: {
+                                    display: true,
+                                    color: 'rgba(179, 229, 252, 0.15)'
+                                },
+                                suggestedMin: 0,
+                                suggestedMax: 10,
+                                ticks: {
+                                    stepSize: 2,
+                                    color: '#b3e5fc',
+                                    backdropColor: 'transparent'
+                                },
+                                pointLabels: {
+                                    color: '#b3e5fc',
+                                    font: {
+                                        size: 14,
+                                        weight: '600'
+                                    }
+                                },
+                                grid: {
+                                    color: 'rgba(179, 229, 252, 0.1)'
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: '#b3e5fc',
+                                    font: {
+                                        size: 14,
+                                        weight: '500'
+                                    },
+                                    padding: 20,
+                                    usePointStyle: true,
+                                    pointStyle: 'circle'
+                                },
+                                position: 'top',
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(15, 35, 65, 0.95)',
+                                titleColor: '#4fc3f7',
+                                bodyColor: '#e0f7fa',
+                                borderColor: 'rgba(66, 133, 244, 0.5)',
+                                borderWidth: 1,
+                                padding: 15,
+                                usePointStyle: true,
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        
+                                        const rawValue = context.raw;
+                                        const axis = context.chart.scales.r;
+                                        
+                                        // Convert normalized values back to original scale
+                                        switch(context.dataIndex) {
+                                            case 0: // Price
+                                                const price = denormalizeValue(rawValue, 0, 70000000);
+                                                label += price > 0 ? 
+                                                    `${(price/1000000).toFixed(2)}M aUEC` : 'N/A';
+                                                break;
+                                            case 1: // Cargo
+                                                const cargo = denormalizeValue(rawValue, 0, 700);
+                                                label += `${cargo} SCU`;
+                                                break;
+                                            case 2: // Attack
+                                                label += `${rawValue}/10`;
+                                                break;
+                                            case 3: // Speed
+                                                const speed = denormalizeValue(rawValue, 0, 300);
+                                                label += `${speed} m/s`;
+                                                break;
+                                            case 4: // Defense
+                                                label += `${rawValue}/10`;
+                                                break;
+                                        }
+                                        
+                                        return label;
+                                    }
+                                }
+                            }
+                        },
+                        animation: {
+                            duration: 1000,
+                            easing: 'easeOutQuart'
+                        }
+                    }
+                });
             }
             
-            categoryList.innerHTML = categoryHTML || `
-                <div class="category-item">
-                    <div class="category-name">
-                        <span class="category-icon">📊</span>
-                        No expenses yet
-                    </div>
-                </div>
-            `;
-        }
-        
-        // Render chart
-        function renderChart() {
-            // Clear previous chart
-            chartContainer.innerHTML = '';
-            
-            // Group expenses by category
-            const categories = {};
-            expenses.forEach(expense => {
-                if (categories[expense.category]) {
-                    categories[expense.category] += expense.amount;
-                } else {
-                    categories[expense.category] = expense.amount;
-                }
-            });
-            
-            // Find max value for scaling
-            const maxValue = Math.max(...Object.values(categories), 10);
-            
-            // Create chart bars
-            for (const category in categories) {
-                const barHeight = (categories[category] / maxValue) * 180;
-                
-                const bar = document.createElement('div');
-                bar.className = 'chart-bar';
-                bar.style.height = `${barHeight}px`;
-                bar.innerHTML = `
-                    <div class="chart-label">${category}</div>
-                `;
-                
-                chartContainer.appendChild(bar);
+            // Helper function to normalize values to 0-10 scale
+            function normalizeValue(value, min, max) {
+                return ((value - min) / (max - min)) * 10;
             }
             
-            // If no data, show message
-            if (Object.keys(categories).length === 0) {
-                chartContainer.innerHTML = '<p style="color:#7f8c8d; text-align: center;">Add expenses to see chart</p>';
-                chartContainer.style.alignItems = 'center';
-                chartContainer.style.justifyContent = 'center';
+            // Helper function to denormalize values
+            function denormalizeValue(normalized, min, max) {
+                return Math.round((normalized / 10) * (max - min) + min);
             }
-        }
-        
-        // Get icon for category
-        function getCategoryIcon(category) {
-            const icons = {
-                'Food': '🍔',
-                'Transport': '🚗',
-                'Housing': '🏠',
-                'Entertainment': '🎭',
-                'Shopping': '🛍️',
-                'Utilities': '💡',
-                'Healthcare': '🏥',
-                'Travel': '✈️',
-                'Other': '📦'
-            };
-            
-            return icons[category] || '📊';
-        }
-        
-        // Initialize the app when DOM is loaded
-        document.addEventListener('DOMContentLoaded', initApp);
+        });
     </script>
 </body>
 </html>
